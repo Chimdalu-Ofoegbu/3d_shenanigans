@@ -5,7 +5,7 @@ Step 1 (the free analysis) is done: see `image.json`. Everything below is what t
 
 Source: `source/0-calathea-crimson.jpg`, cropped from a phone screenshot (590x738).
 
-## Proposed objects (awaiting confirmation)
+## Objects (confirmed 2026-10-05)
 
 | id | make a 3D model? | why |
 |---|---|---|
@@ -14,9 +14,9 @@ Source: `source/0-calathea-crimson.jpg`, cropped from a phone screenshot (590x73
 | `pine-board` | no (stays in the world) | the plants need a surface to sit on in the world |
 | `wooden-crate` | no (stays in the world) | cut off by the frame edge, so a 3D model would be guesswork |
 
-Pot and plant are kept together as one object, since you lift them as one unit. The two plants are
-kept as separate objects because their leaf patterns differ. If you want them merged into one asset
-used twice, that cuts the cost from 16 to 10 calls.
+Pot and plant are kept together as one object, since you lift them as one unit. Confirmed: two
+separate plants, plastic pots, no original photo (the 590x738 screenshot crop is the source).
+`object.json` files are written under `output/<id>/`.
 
 ## Paid steps and call count
 
@@ -67,17 +67,15 @@ node .claude/scripts/sfx/fal-elevenlabs-sfx.mjs --prompt "ambient environment, l
   --output-dir "worlds/calathea-crimson/output/sfx" --prefix ambient-loop --count 2 --kind world-ambience --duration-seconds 10 --loop --postprocess true
 
 # per object: 4 impact one-shots, 1s each
-node .claude/scripts/sfx/fal-elevenlabs-sfx.mjs --prompt "impact one-shot, short-decay, small glossy purple plant pot filled with soil and leafy foliage hitting a hard surface" \
+node .claude/scripts/sfx/fal-elevenlabs-sfx.mjs --prompt "impact one-shot, short-decay, small glossy purple plastic plant pot filled with soil and leafy foliage hitting a hard surface" \
   --output-dir "worlds/calathea-crimson/output/calathea-pink-blotch/sfx" --prefix impact-calathea-pink-blotch --count 4 --kind object-impact --duration-seconds 1 --postprocess true
 # (same prompt again for calathea-pink-stripe, with its own output dir and prefix)
 ```
 
 ## Caveats for this source
 
-- **Low resolution (590x738).** The screenshot is fine for analysis, but it will cap the quality of
-  the world and the models. The original photo from the post would be much better, and the post
-  has 3 photos (1/3), which could all be used as extra angles for the analysis.
-- **Pot material is unclear** (plastic vs glazed ceramic). This changes the impact sound
-  noticeably.
+- **Low resolution (590x738).** No original photo is available, so this caps the detail of the
+  world and the models. Use `--reference-only` first to check the plant cut-outs before paying
+  for the 3D step.
 - **The photo is someone else's** (an Instagram shop post). That's fine for experimenting, but keep
   it in mind before sharing outputs.
