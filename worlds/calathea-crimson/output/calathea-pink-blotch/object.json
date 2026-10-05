@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "world": "calathea-crimson",
+  "object": {
+    "id": "calathea-pink-blotch",
+    "name": "potted calathea with pink-blotched leaves",
+    "description": "Small calathea plant in a glossy metallic purple plastic tapered pot with a stepped rim. Rounded leaves with bright magenta-pink centers and dark green margins, one solid dark burgundy leaf, burgundy undersides, dark soil visible at the top of the pot.",
+    "materials": [
+      "calathea foliage",
+      "potting soil",
+      "glossy purple plastic pot"
+    ],
+    "source_images": [
+      "worlds/calathea-crimson/source/0-calathea-crimson.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/calathea-crimson/source/0-calathea-crimson.jpg",
+        "location_in_image": "left half of the board, center-left of the frame"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/calathea-crimson/output/calathea-pink-blotch"
+  },
+  "updated_at": "2026-10-05T16:52:52.000Z"
+}

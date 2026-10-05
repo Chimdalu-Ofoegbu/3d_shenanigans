@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "world": "calathea-crimson",
+  "object": {
+    "id": "calathea-pink-stripe",
+    "name": "potted calathea with pink-striped dark leaves",
+    "description": "Small calathea plant in a glossy metallic purple plastic tapered pot with a stepped rim. Large rounded dark green-black leaves with thin magenta-pink stripes along the midrib and near the edges, burgundy undersides, a rolled new leaf at the center, a dried brown leaf sheath near the base, dark soil visible at the top of the pot.",
+    "materials": [
+      "calathea foliage",
+      "potting soil",
+      "glossy purple plastic pot"
+    ],
+    "source_images": [
+      "worlds/calathea-crimson/source/0-calathea-crimson.jpg"
+    ],
+    "evidence": [
+      {
+        "image": "worlds/calathea-crimson/source/0-calathea-crimson.jpg",
+        "location_in_image": "right half of the board, center-right of the frame"
+      }
+    ],
+    "generate_as_3d_object": true,
+    "working_dir": "worlds/calathea-crimson/output/calathea-pink-stripe"
+  },
+  "updated_at": "2026-10-05T16:52:52.000Z"
+}
