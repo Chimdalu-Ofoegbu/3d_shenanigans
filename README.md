@@ -1,3 +1,10 @@
+> **3d_shenanigans fork.** Based on [neilsonnn/image-blaster](https://github.com/neilsonnn/image-blaster) at commit `4acb43b` (MIT, Copyright (c) 2026 Neilson Koerner-Safrata; see `LICENSE.md`). Changes in this fork:
+> - Viewer: objects play their impact SFX when they collide, with volume scaled by impact speed (previously only on click/grab).
+> - Setup hook accepts `WORLD_LABS_API_KEY` / `FAL_KEY` from environment variables, not just `.env`, and in cloud sessions points to environment settings instead of asking for keys in chat.
+> - `--provider fal-ai/hunyuan-3d/v3.1/pro/image-to-3d` now errors instead of silently running Hunyuan v3.
+> - New `.claude/scripts/project/crop-image.mjs`; the uncover skill crops phone screenshots to the photo region before analysis.
+> - `worlds/calathea-crimson/` holds a dry run (analysis + planned prompts) for a first blast.
+
 <img width="960" height="540" alt="image-blaster-1" src="https://github.com/user-attachments/assets/d294e420-eb48-4f00-b6a8-13005442d1a8" />
 
 ## `image-blaster`

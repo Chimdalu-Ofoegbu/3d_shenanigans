@@ -8,7 +8,9 @@ env_key_is_set() {
   local key="$1"
   local value
 
-  value=$(awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }' .env 2>/dev/null)
+  # Scripts read process.env before .env, so an exported variable counts too.
+  value="${!key}"
+  [ -n "$value" ] || value=$(awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }' .env 2>/dev/null)
   value="${value%\"}"
   value="${value#\"}"
   value="${value%\'}"
@@ -30,16 +32,13 @@ print_key_help() {
   local purpose="$2"
   local url="$3"
 
-  echo "⚠️  $key is missing in .env."
+  echo "⚠️  $key is not set (checked the environment and .env)."
   echo "   Used for: $purpose"
   echo "   Tell the user to visit this URL to create or copy the key: $url"
 }
 
 env_file_exists=1
-if [ ! -f .env ]; then
-  env_file_exists=0
-  echo "⚠️  .env is missing."
-fi
+[ -f .env ] || env_file_exists=0
 
 missing_env_key=0
 
@@ -54,7 +53,9 @@ if ! env_key_is_set "FAL_KEY"; then
 fi
 
 if [ "$missing_env_key" -eq 1 ]; then
-  if [ "$env_file_exists" -eq 0 ]; then
+  if [ -n "$CLAUDE_CODE_REMOTE" ]; then
+    echo "   Tell the user: this is a cloud session, so add the key(s) as environment variables in the cloud environment settings (title bar > environment menu > Edit), not in chat. A new session picks them up."
+  elif [ "$env_file_exists" -eq 0 ]; then
     echo "   Tell the user: paste the key(s) here after visiting those URLs, and I can create .env from .env.example or add them for you."
   else
     echo "   Tell the user: paste the missing key(s) here after visiting the URL(s), and I can update .env for you."

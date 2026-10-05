@@ -2,7 +2,7 @@
 name: image-blast-uncover
 description: Main image analysis skill, object generation, plate decisionmaking, and initial scene description. Use this skill when user wants to create objects and necessary for main image analysis.  
 argument-hint: [world-name] [optional image paths or instructions]
-allowed-tools: Read Write Glob Bash(ls *) Bash(node .claude/scripts/project/project-state.mjs *)
+allowed-tools: Read Write Glob Bash(ls *) Bash(node .claude/scripts/project/project-state.mjs *) Bash(node .claude/scripts/project/crop-image.mjs *)
 ---
 
 Uncover literal image information for project `$0`. Additional image paths or instructions may appear in `$ARGUMENTS`.
@@ -22,7 +22,16 @@ If no source images exist after staging and the user needs to add images, report
 
 3. Read `IMAGE-BLAST.md` in this skill directory and follow its JSON contract exactly.
 4. Gather source images from explicit paths in `$ARGUMENTS` and `worlds/$0/source/`. Use `input/` only through the project-state staging step so source paths are stable. Source images use indexed families (`0-<slug>.<ext>`, `1-<slug>.png`, etc.); by default, analyze the latest image in each family and do not treat every historical plate/edit as separate evidence unless requested.
-5. Analyze one source image at a time:
+5. Before analysis, check each latest source image for screenshot chrome: phone status bars, app UI, buttons, captions, or a photo embedded inside a larger frame. If present, crop to the photo region (print the size first, then crop) and analyze the cropped image instead:
+
+```bash
+node .claude/scripts/project/crop-image.mjs --image "<source image>"
+node .claude/scripts/project/crop-image.mjs --image "<source image>" --crop "<w>:<h>:<x>:<y>"
+```
+
+The crop becomes the next indexed source file (`N-<slug>-crop.<ext>`), so the plate and world steps pick it up automatically. Overlays that remain inside the photo (watermarks, logos, like/comment icons, page badges) cannot be cropped away; list them in the analysis and add them to the clean plate removal list.
+
+6. Analyze one source image at a time:
    - Read the image directly using agent image understanding.
    - Use literal, observational language only.
    - Extract object candidates as single cleanly segmentable items only. A good separability test is whether a human could lift the item or move it by pushing it.
@@ -31,27 +40,27 @@ If no source images exist after staging and the user needs to add images, report
    - Write a sibling JSON file at `worlds/$0/source/<image-name>.json`.
    - Per-image JSON must use the same flat schema as root `image.json`.
    - Per-image JSON must not contain `images[]`.
-6. Treat existing `worlds/$0/source/<image-name>.json` files as reusable analysis:
+7. Treat existing `worlds/$0/source/<image-name>.json` files as reusable analysis:
    - If the source image or user instruction changed, update the sibling JSON.
    - If the user deleted a source image or source JSON, do not recreate it unless the image still exists and should be analyzed.
-7. After all per-image JSON files exist, derive `worlds/$0/image.json` by reading and merging all valid `worlds/$0/source/*.json` image analyses.
+8. After all per-image JSON files exist, derive `worlds/$0/image.json` by reading and merging all valid `worlds/$0/source/*.json` image analyses.
    - combine `source_images`
    - synthesize one shared `scene_name`, `short_caption`, and `literal_description`
    - merge `environment`, `visual_style`, `lighting`, `atmosphere`, and `ambient_sound`
    - deduplicate `objects` while preserving source-image evidence
    - use the same flat schema as each per-image JSON
    - do not write `images[]`
-8. Present the root image analysis and merged object candidates to the user for approval or revision. Keep it concise:
+9. Present the root image analysis and merged object candidates to the user for approval or revision. Keep it concise:
    - scene name and short caption
    - literal environment, visual style, lighting, atmosphere, and ambient sound
    - object candidates with material and source-image evidence
-9. Stop here until the user confirms which objects to create. When approved, create or update one object file per approved object:
+10. Stop here until the user confirms which objects to create. When approved, create or update one object file per approved object:
 
 ```text
 worlds/$0/output/<object-slug>/object.json
 ```
 
-10. Each `object.json` should use this shape:
+11. Each `object.json` should use this shape:
 
 ```json
 {
@@ -73,17 +82,17 @@ worlds/$0/output/<object-slug>/object.json
 
 Object files store durable identity, intent, and provenance only. Do not write generated state such as `status`, `jobs`, generated `files`, request lifecycle, or completion data into `object.json`. Generated outputs and request state live beside `object.json` as indexed visible artifacts and hidden request JSON.
 
-11. After object files are written, handle the clean plate decision:
+12. After object files are written, handle the clean plate decision:
    - In one-shot mode, continue with `Agent(image-blast-plate)` and wait for it before world generation.
    - Otherwise ask whether to remove confirmed objects any anything else the user wants to remove from the source image to create a clean plate to generate a world from.
 
-12. Refresh derived project state:
+13. Refresh derived project state:
 
 ```bash
 node .claude/scripts/project/project-state.mjs --world "$0"
 ```
 
-13. Report saved paths, source image count, per-image JSON count, created/updated object directory count, and the clean plate decision.
+14. Report saved paths, source image count, per-image JSON count, created/updated object directory count, and the clean plate decision.
 
 ## Output Locations
 

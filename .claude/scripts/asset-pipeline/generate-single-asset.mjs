@@ -57,8 +57,7 @@ const MODEL_PROVIDER_ALIASES = new Map([
   ["hunyuan", HUNYUAN_3D_PROVIDER],
   ["hunyuan-3d", HUNYUAN_3D_PROVIDER],
   ["hunyuan3d-v3", HUNYUAN_3D_PROVIDER],
-  ["fal-ai/hunyuan3d-v3/image-to-3d", HUNYUAN_3D_PROVIDER],
-  ["fal-ai/hunyuan-3d/v3.1/pro/image-to-3d", HUNYUAN_3D_PROVIDER]
+  ["fal-ai/hunyuan3d-v3/image-to-3d", HUNYUAN_3D_PROVIDER]
 ]);
 
 async function readJsonIfExists(filePath) {

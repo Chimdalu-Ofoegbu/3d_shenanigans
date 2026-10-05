@@ -9,6 +9,11 @@ import { useSceneObjectVisual } from './useSceneObjectVisual'
 
 export const OBJECT_SCALE = 0.5
 const OBJECT_AUTO_ROTATE_Y_SPEED = 0.35
+// Collision impact SFX: speeds in m/s, below MIN is silent, at FULL plays at full volume.
+const IMPACT_MIN_SPEED = 0.6
+const IMPACT_FULL_SPEED = 4
+const IMPACT_MIN_VOLUME = 0.15
+const IMPACT_COOLDOWN_MS = 120
 
 const COLLIDER_WIREFRAME_COLOR = 0x00aaff
 
@@ -100,6 +105,8 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
   const colliderProxyRef = useRef<THREE.Mesh>(null)
   const sfxRefs = useRef<Array<THREE.PositionalAudio | null>>([])
   const lastSfxIndexRef = useRef<number | null>(null)
+  const lastSpeedRef = useRef(0)
+  const lastImpactAtRef = useRef(0)
   const muted = useAudioStore((s) => s.muted)
   const isStatic = physics === 'static' || physics === 'ghost'
   const usesBoxCollider = physics === 'rigidbody' || physics === 'static'
@@ -139,6 +146,14 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
     visualGroupRef.current.rotation.y += delta * OBJECT_AUTO_ROTATE_Y_SPEED
   })
 
+  // Remember the pre-impact speed: by the time a collision event arrives, the solver has already slowed the body.
+  useFrame(() => {
+    const body = rigidBodyRef.current
+    if (isStatic || !body) return
+    const v = body.linvel()
+    lastSpeedRef.current = Math.hypot(v.x, v.y, v.z)
+  })
+
   useEffect(() => {
     colliderWireframeMaterial.opacity = 0
     colliderWireframeMaterial.transparent = true
@@ -160,7 +175,7 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
     })
   }, [muted])
 
-  const playRandomSfx = useCallback(() => {
+  const playRandomSfx = useCallback((volume = 1) => {
     if (muted || object.sfxUrls.length === 0) return
 
     const lastIndex = lastSfxIndexRef.current
@@ -174,7 +189,7 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
     if (!sound) return
 
     lastSfxIndexRef.current = nextIndex
-    sound.setVolume(1)
+    sound.setVolume(volume)
     if (sound.isPlaying) sound.stop()
 
     const play = () => sound.play()
@@ -202,6 +217,19 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
     }
   }, [colliderWireframeMaterial])
 
+  const playImpactSfx = useCallback(() => {
+    const body = rigidBodyRef.current
+    if (isStatic || !body) return
+    const v = body.linvel()
+    const speed = Math.max(lastSpeedRef.current, Math.hypot(v.x, v.y, v.z))
+    if (speed < IMPACT_MIN_SPEED) return
+    const now = performance.now()
+    if (now - lastImpactAtRef.current < IMPACT_COOLDOWN_MS) return
+    lastImpactAtRef.current = now
+    const t = (speed - IMPACT_MIN_SPEED) / (IMPACT_FULL_SPEED - IMPACT_MIN_SPEED)
+    playRandomSfx(THREE.MathUtils.clamp(t, IMPACT_MIN_VOLUME, 1))
+  }, [isStatic, playRandomSfx])
+
   useImperativeHandle(
     ref,
     () => ({
@@ -216,7 +244,7 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
         if (colliderProxyRef.current) return colliderProxyRef.current.getWorldPosition(target)
         return target.copy(initialPosition).add(colliderCenter)
       },
-      playInteractionSfx: playRandomSfx,
+      playInteractionSfx: () => playRandomSfx(),
     }),
     [bounds, colliderCenter, initialPosition, initialRotation, object.id, playRandomSfx],
   )
@@ -254,6 +282,7 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
       additionalSolverIterations={4}
       ccd
       canSleep
+      onCollisionEnter={playImpactSfx}
     >
       {usesBoxCollider && (
         <CuboidCollider
