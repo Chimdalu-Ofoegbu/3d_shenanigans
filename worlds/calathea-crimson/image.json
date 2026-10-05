@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "world": "calathea-crimson",
+  "source_images": ["worlds/calathea-crimson/source/0-calathea-crimson.jpg"],
+  "scene_name": "Calathea Crimson Display",
+  "short_caption": "Two potted calatheas in purple pots on a wooden board.",
+  "literal_description": "Two small calathea plants stand in glossy purple pots on a light pine board. The left plant has rounded leaves with bright magenta-pink centers and dark green margins, plus one solid dark burgundy leaf. The right plant has larger dark green-black leaves marked with thin magenta-pink stripes along the midrib and near the edges, burgundy leaf undersides, and a rolled new leaf at the center. Water droplets sit on several leaf surfaces. The board shows a dark knot and wavy grain. Behind it is a dark charcoal wall with a fine stippled texture. A stacked light-wood crate on a black frame is partly visible at the right edge. Grey carpet is visible below the board on both sides. The photo is taken from slightly above, at close range. A circular PAROSTOK logo, a 1/3 badge and social media icons are overlaid on the image.",
+  "environment": "Small indoor product-photo setup: light pine board on a grey carpeted floor in front of a dark stippled charcoal wall, with a light-wood crate on a black frame at the right edge.",
+  "visual_style": "photorealistic, smartphone product photo, close-up, high contrast",
+  "lighting": "Hard directional warm-white light from the front right, high contrast, crisp dark shadows cast leftward and backward across the board, dark falloff on the background wall.",
+  "atmosphere": "Clear indoor air with no visible fog, dust, haze or smoke. Small water droplets visible on leaves.",
+  "ambient_sound": "Quiet indoor room tone with a soft, steady background hush.",
+  "objects": [
+    {
+      "id": "calathea-pink-blotch",
+      "name": "potted calathea with pink-blotched leaves",
+      "description": "Small calathea plant in a glossy metallic purple tapered pot with a stepped rim. Rounded leaves with bright magenta-pink centers and dark green margins, one solid dark burgundy leaf, burgundy undersides, dark soil visible at the top of the pot.",
+      "count_estimate": 1,
+      "materials": ["calathea foliage", "potting soil", "glossy purple pot (plastic or glazed ceramic, not determinable from the photo)"],
+      "source_images": ["worlds/calathea-crimson/source/0-calathea-crimson.jpg"],
+      "evidence": [
+        {
+          "image": "worlds/calathea-crimson/source/0-calathea-crimson.jpg",
+          "location_in_image": "left half of the board, center-left of the frame"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "calathea-pink-stripe",
+      "name": "potted calathea with pink-striped dark leaves",
+      "description": "Small calathea plant in a glossy metallic purple tapered pot with a stepped rim. Large rounded dark green-black leaves with thin magenta-pink stripes along the midrib and near the edges, burgundy undersides, a rolled new leaf at the center, a dried brown leaf sheath near the base, dark soil visible at the top of the pot.",
+      "count_estimate": 1,
+      "materials": ["calathea foliage", "potting soil", "glossy purple pot (plastic or glazed ceramic, not determinable from the photo)"],
+      "source_images": ["worlds/calathea-crimson/source/0-calathea-crimson.jpg"],
+      "evidence": [
+        {
+          "image": "worlds/calathea-crimson/source/0-calathea-crimson.jpg",
+          "location_in_image": "right half of the board, center-right of the frame"
+        }
+      ],
+      "generate_as_3d_object": true
+    },
+    {
+      "id": "pine-board",
+      "name": "light pine board",
+      "description": "Flat rectangular light pine board with a dark knot and wavy grain and a raw front edge, resting on carpet.",
+      "count_estimate": 1,
+      "materials": ["pine wood"],
+      "source_images": ["worlds/calathea-crimson/source/0-calathea-crimson.jpg"],
+      "evidence": [
+        {
+          "image": "worlds/calathea-crimson/source/0-calathea-crimson.jpg",
+          "location_in_image": "lower half of the frame, under both plants"
+        }
+      ],
+      "generate_as_3d_object": false
+    },
+    {
+      "id": "wooden-crate",
+      "name": "light-wood crate",
+      "description": "Stacked light-wood slatted crate on a black frame, cut off by the right edge of the frame.",
+      "count_estimate": 1,
+      "materials": ["light wood", "black painted frame"],
+      "source_images": ["worlds/calathea-crimson/source/0-calathea-crimson.jpg"],
+      "evidence": [
+        {
+          "image": "worlds/calathea-crimson/source/0-calathea-crimson.jpg",
+          "location_in_image": "right edge, upper middle, partly out of frame"
+        }
+      ],
+      "generate_as_3d_object": false
+    }
+  ]
+}
